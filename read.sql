@@ -1,29 +1,21 @@
-DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS departments;
-
-CREATE TABLE departments (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) UNIQUE NOT NULL
+create table courses(
+	id serial primary key,
+	title varchar(100) not null,
+	fee numeric(8,2) not null check(fee>=0),
+	instructor_id int references users(id) on delete set null,
+	created_at timestamp default now()
 );
 
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    role VARCHAR(100) CHECK (role IN ('student','professor','admin')),
-    department_id INT REFERENCES departments(id) ON DELETE SET NULL,
-    metadata JSONB,
-    is_active BOOLEAN DEFAULT TRUE,
-    created_at TIMESTAMP DEFAULT NOW()
-);
---insert single data into table
-insert into departments(name) values('CSE');
-select *from departments;
-
---insert multiple data at once
-insert into departments(name) values('AI & ML'),('IT'),('CSBS'),('EE') on conflict (name) do nothing;
-SELECT COUNT(*) FROM users;
+--select a entire table (read)
 select *from users;
 
-select *from courses;
-select fee as "base fees" , fee*1.13 as "Total fees" from courses;
+--select specific field
+select name,email,role from users;
+select *from users where role= 'professor';
+
+--formatting using alies
+select name as "full name" ,email as "Address" from users;
+
+
+--finding unique or distinct value
+select distinct role from users;
